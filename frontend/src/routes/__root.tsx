@@ -73,16 +73,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SILO — Verifiable Proof of Skill" },
+      { title: "Skill Passport — Verifiable Proof of Skill" },
       { name: "description", content: "A Web3 digital identity for students. Mint, hold, and verify tamper-proof credentials on-chain." },
-      { property: "og:title", content: "SILO" },
+      { property: "og:title", content: "Skill Passport" },
       { property: "og:description", content: "Verifiable proof of skill for the next generation of talent." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -99,7 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
-  const themeScript = `(function(){try{var t=localStorage.getItem('silo-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`;
+  const themeScript = `(function(){try{var t=localStorage.getItem('passport-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`;
   return (
     <html lang="en">
       <head>

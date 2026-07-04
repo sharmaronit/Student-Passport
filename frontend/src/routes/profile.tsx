@@ -7,8 +7,8 @@ import { student, shortWallet } from "@/lib/passport-data";
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Profile — SILO" },
-      { name: "description", content: "Your SILO identity and public link." },
+      { title: "Profile — Passport" },
+      { name: "description", content: "Your Passport identity and public link." },
     ],
   }),
   component: ProfilePage,
@@ -22,7 +22,7 @@ function ProfilePage() {
           to="/student"
           className="hairline hidden items-center gap-2 bg-card px-3 py-1.5 text-[11px] uppercase tracking-[0.16em] hover:bg-secondary md:flex"
         >
-          <ArrowLeft className="h-3.5 w-3.5" /> Back to SILO
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
         </Link>
       }
     >
@@ -30,14 +30,14 @@ function ProfilePage() {
         <SectionTitle
           eyebrow="Profile"
           title="Identity at a glance."
-          description="Scan the code to open this SILO on any device — no wallet required."
+          description="Scan the code to open this Passport on any device — no wallet required."
         />
         <div className="hairline mt-8 grid grid-cols-1 lg:grid-cols-[auto_1fr]">
           {/* QR panel */}
           <div className="flex flex-col items-center gap-4 border-b border-border p-8 lg:border-b-0 lg:border-r lg:w-[300px]">
             <div className="hairline bg-background p-4">
               <QRCode
-                value={`https://silo.id/p/${student.github}`}
+                value={`https://passport.id/p/${student.github}`}
                 size={180}
                 bgColor="transparent"
                 fgColor="currentColor"
@@ -48,7 +48,7 @@ function ProfilePage() {
               <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 Public link
               </div>
-              <div className="mono mt-1 text-[11px]">silo.id/p/{student.github}</div>
+              <div className="mono mt-1 text-[11px]">passport.id/p/{student.github}</div>
             </div>
           </div>
 
@@ -91,7 +91,7 @@ function ProfilePage() {
                   l: "Website",
                   v: (
                     <a href="#" className="flex items-center gap-1.5 hover:underline">
-                      <LinkIcon className="h-3.5 w-3.5" /> silo.id/p/{student.github}
+                      <LinkIcon className="h-3.5 w-3.5" /> passport.id/p/{student.github}
                     </a>
                   ),
                 },

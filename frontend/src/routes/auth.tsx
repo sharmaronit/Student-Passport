@@ -7,8 +7,8 @@ import { ThemeToggle } from "@/components/passport/ThemeToggle";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — SILO" },
-      { name: "description", content: "Connect your wallet or sign in with email to open your SILO." },
+      { title: "Sign in — Passport" },
+      { name: "description", content: "Connect your wallet or sign in with email to open your Passport." },
     ],
   }),
   component: Auth,
@@ -32,7 +32,7 @@ function Auth() {
 
         <div>
           <div className="text-[11px] uppercase tracking-[0.24em] opacity-70">
-            — SILO
+            — Passport
           </div>
           <h1 className="mt-6 font-display text-6xl font-semibold leading-[0.95] md:text-7xl">
             Verifiable
@@ -40,7 +40,7 @@ function Auth() {
             <span className="italic font-normal">proof of skill.</span>
           </h1>
           <p className="mt-8 max-w-md font-display text-lg leading-snug opacity-90">
-            One SILO. Every credential you earn — from hackathon wins to your first
+            One Passport. Every credential you earn — from hackathon wins to your first
             internship — signed on-chain by the institutions that granted them, held by you.
           </p>
         </div>
@@ -75,7 +75,7 @@ function Auth() {
           <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             — Sign in
           </div>
-          <h2 className="mt-4 font-display text-4xl font-semibold">Open your SILO</h2>
+          <h2 className="mt-4 font-display text-4xl font-semibold">Open your Passport</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             Connect a wallet to hold your credentials as soulbound tokens, or continue with
             email to preview the experience.

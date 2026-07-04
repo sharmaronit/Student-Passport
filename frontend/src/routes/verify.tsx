@@ -7,8 +7,8 @@ import { credentials, type Credential } from "@/lib/passport-data";
 export const Route = createFileRoute("/verify")({
   head: () => ({
     meta: [
-      { title: "Verify a Credential — SILO" },
-      { name: "description", content: "Cryptographically verify any SILO credential. No wallet required." },
+      { title: "Verify a Credential — Passport" },
+      { name: "description", content: "Cryptographically verify any Skill Passport credential. No wallet required." },
     ],
   }),
   component: Verify,
@@ -38,7 +38,7 @@ function Verify() {
       <section className="mx-auto max-w-[1200px] px-6 pt-10 lg:px-10">
         <SectionTitle
           eyebrow="Public verifier"
-          title="Verify a SILO credential."
+          title="Verify a Skill Passport credential."
           description="Paste a Token ID or transaction hash. Anyone can verify — no wallet connection required."
         />
 

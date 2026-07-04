@@ -5,7 +5,7 @@ type Theme = "light" | "dark";
 
 function getInitial(): Theme {
   if (typeof window === "undefined") return "light";
-  const stored = window.localStorage.getItem("silo-theme") as Theme | null;
+  const stored = window.localStorage.getItem("passport-theme") as Theme | null;
   if (stored === "light" || stored === "dark") return stored;
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
@@ -24,7 +24,7 @@ export function useTheme() {
       const next: Theme = prev === "dark" ? "light" : "dark";
       document.documentElement.classList.toggle("dark", next === "dark");
       try {
-        window.localStorage.setItem("silo-theme", next);
+        window.localStorage.setItem("passport-theme", next);
       } catch {}
       return next;
     });

@@ -26,7 +26,7 @@ import {
 export const Route = createFileRoute("/student")({
   head: () => ({
     meta: [
-      { title: "Holder Dashboard — SILO" },
+      { title: "Holder Dashboard — Passport" },
       { name: "description", content: "Your soulbound credentials, at a glance." },
     ],
   }),
@@ -89,7 +89,7 @@ function StudentDashboard() {
                 onClick={() => setShareOpen(true)}
                 className="hairline group flex items-center gap-2 bg-primary px-4 py-2.5 text-xs uppercase tracking-[0.18em] text-primary-foreground transition-transform hover:-translate-y-0.5"
               >
-                <Share2 className="h-3.5 w-3.5" /> Share SILO
+                <Share2 className="h-3.5 w-3.5" /> Share Passport
               </button>
               <button className="hairline flex items-center gap-2 px-4 py-2.5 text-xs uppercase tracking-[0.18em] hover:bg-secondary">
                 <Copy className="h-3.5 w-3.5" /> {shortWallet(student.wallet)}
@@ -351,7 +351,7 @@ function ShareModal({
   const [expiry, setExpiry] = useState("7d");
   const [limitViews, setLimitViews] = useState(false);
   const [viewCount, setViewCount] = useState(25);
-  const url = `silo.id/p/ava-chen?exp=${expiry}${limitViews ? `&v=${viewCount}` : ""}`;
+  const url = `passport.id/p/ava-chen?exp=${expiry}${limitViews ? `&v=${viewCount}` : ""}`;
 
   return (
     <Modal onClose={onClose}>
@@ -360,7 +360,7 @@ function ShareModal({
       </div>
       <h3 className="mt-2 font-display text-3xl font-semibold">Public verification link</h3>
       <p className="mt-2 text-sm text-muted-foreground">
-        Grant read-only access to your SILO. Recipients can verify without connecting a wallet.
+        Grant read-only access to your Passport. Recipients can verify without connecting a wallet.
       </p>
 
       <div className="mt-6 space-y-4">

@@ -47,9 +47,9 @@ function Landing() {
       <header className="relative z-10 mx-auto flex max-w-[1400px] items-center justify-between px-6 py-6 lg:px-10 animate-fade-down">
         <div className="flex items-center gap-3 group">
           <div className="grid h-9 w-9 place-items-center border border-foreground bg-foreground text-background text-xs font-semibold tracking-wider transition-transform duration-500 group-hover:rotate-[8deg] group-hover:scale-110">
-            S
+            P
           </div>
-          <div className="font-display text-[15px] font-semibold">SILO</div>
+          <div className="font-display text-[15px] font-semibold">PASSPORT</div>
         </div>
         <div className="flex items-center gap-3">
           <ThemeToggle />
@@ -106,7 +106,7 @@ function Landing() {
               to="/auth"
               className="hairline group magnetic flex items-center gap-3 bg-primary px-5 py-3 text-xs uppercase tracking-[0.2em] text-primary-foreground"
             >
-              Open SILO
+              Open Passport
               <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" strokeWidth={2} />
             </Link>
           </div>

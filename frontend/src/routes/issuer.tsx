@@ -7,7 +7,7 @@ import { issuedHistory, issuer } from "@/lib/passport-data";
 export const Route = createFileRoute("/issuer")({
   head: () => ({
     meta: [
-      { title: "Issuer Dashboard — SILO" },
+      { title: "Issuer Dashboard — Passport" },
       { name: "description", content: "Mint verifiable credentials as soulbound tokens." },
     ],
   }),

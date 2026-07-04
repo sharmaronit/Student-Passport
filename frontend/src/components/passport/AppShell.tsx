@@ -19,10 +19,10 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
         <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 lg:px-10">
           <Link to="/" className="flex items-center gap-3">
             <div className="grid h-9 w-9 place-items-center border border-foreground bg-foreground text-background text-xs font-semibold tracking-wider">
-              S
+              P
             </div>
             <div className="leading-tight">
-              <div className="font-display text-[15px] font-semibold">SILO</div>
+              <div className="font-display text-[15px] font-semibold">PASSPORT</div>
               <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                 Verifiable · Onchain
               </div>
@@ -60,7 +60,7 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
 
       <footer className="hairline border-x-0 border-b-0 mt-24">
         <div className="mx-auto flex max-w-[1400px] flex-col items-start justify-between gap-3 px-6 py-8 text-xs text-muted-foreground md:flex-row md:items-center lg:px-10">
-          <div className="font-display italic">SILO — Est. 2025</div>
+          <div className="font-display italic">PASSPORT — Est. 2026</div>
           <div className="mono uppercase tracking-[0.16em]">
             Deployed on Polygon · IPFS Metadata · EIP-5192 Soulbound
           </div>
