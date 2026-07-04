@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "cd frontend && npm install && npm run build"
+    "build": "cd frontend && npm install && npm run build && rm -rf ../.vercel && mv .vercel ../.vercel"
   },
   "dependencies": {
     "framer-motion": "^12.42.2",

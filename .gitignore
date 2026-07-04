@@ -39,3 +39,7 @@ frontend/dist/
 
 # Hardhat
 contracts/typechain-types/
+
+# Vercel
+.vercel/
+frontend/.vercel/
