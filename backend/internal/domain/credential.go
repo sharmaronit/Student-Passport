@@ -148,3 +148,9 @@ type IssuedCredentialResponse struct {
 	IPFSCID    string     `json:"ipfs_cid"`
 	IPFSUrl    string     `json:"ipfs_url"`
 }
+
+// PullCredentialRequest is the input for requesting a credential via Digilocker-style pull.
+type PullCredentialRequest struct {
+	CredentialType CredentialType    `json:"credential_type" validate:"required"`
+	PullParameters map[string]string `json:"pull_parameters" validate:"required"`
+}

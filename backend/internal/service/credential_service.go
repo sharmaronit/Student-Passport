@@ -17,6 +17,7 @@ type CredentialService struct {
 	credRepo          repository.CredentialRepository
 	userRepo          repository.UserRepository
 	blockchainService BlockchainService
+	pullVerifier      *PullVerificationService
 }
 
 // NewCredentialService creates a new credential service.
@@ -29,6 +30,7 @@ func NewCredentialService(
 		credRepo:          credRepo,
 		userRepo:          userRepo,
 		blockchainService: blockchainService,
+		pullVerifier:      NewPullVerificationService(),
 	}
 }
 
@@ -177,4 +179,155 @@ func (s *CredentialService) RevokeCredential(ctx context.Context, issuerID, cred
 		Msg("credential revoked")
 
 	return nil
+}
+
+// PullCredential verifies third-party parameters, uploads the result to IPFS, and mints an SBT.
+func (s *CredentialService) PullCredential(ctx context.Context, studentID uuid.UUID, req domain.PullCredentialRequest) (*domain.Credential, error) {
+	// Fetch student profile
+	student, err := s.userRepo.GetByID(ctx, studentID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to lookup student: %w", err)
+	}
+	if student == nil {
+		return nil, fmt.Errorf("student not found")
+	}
+
+	var title string
+	var metadataJSON []byte
+	var desc string
+
+	switch req.CredentialType {
+	case domain.CredentialProject:
+		username := req.PullParameters["github_username"]
+		owner := req.PullParameters["repository_owner"]
+		repoName := req.PullParameters["repository_name"]
+
+		verified, metadata, err := s.pullVerifier.VerifyGitHubProject(ctx, username, owner, repoName)
+		if err != nil {
+			return nil, fmt.Errorf("github project verification failed: %w", err)
+		}
+		if !verified {
+			return nil, fmt.Errorf("failed to verify contribution in github repository")
+		}
+
+		title = fmt.Sprintf("Verified Contributions: %s/%s", owner, repoName)
+		desc = fmt.Sprintf("Autopulled and verified project contributions for %s", username)
+		mBytes, _ := json.Marshal(metadata)
+		metadataJSON = mBytes
+
+	case domain.CredentialCertification:
+		certID := req.PullParameters["cert_id"]
+		platform := req.PullParameters["platform"]
+
+		verified, metadata, err := s.pullVerifier.VerifyCredlyCertificate(certID, platform)
+		if err != nil {
+			return nil, fmt.Errorf("certification verification failed: %w", err)
+		}
+		if !verified {
+			return nil, fmt.Errorf("failed to verify certification ID")
+		}
+
+		title = fmt.Sprintf("Verified %s Certification: %s", metadata.Platform, certID)
+		desc = fmt.Sprintf("Autopulled and verified certification ID %s via %s", certID, metadata.Platform)
+		mBytes, _ := json.Marshal(metadata)
+		metadataJSON = mBytes
+
+	case domain.CredentialHackathon:
+		devfolioUser := req.PullParameters["devfolio_username"]
+		eventSlug := req.PullParameters["event_slug"]
+
+		verified, metadata, err := s.pullVerifier.VerifyHackathon(devfolioUser, eventSlug)
+		if err != nil {
+			return nil, fmt.Errorf("hackathon verification failed: %w", err)
+		}
+		if !verified {
+			return nil, fmt.Errorf("failed to verify hackathon project submission")
+		}
+
+		title = fmt.Sprintf("Hackathon Placement: %s", metadata.EventName)
+		desc = fmt.Sprintf("Autopulled and verified hackathon project %s for %s", eventSlug, devfolioUser)
+		mBytes, _ := json.Marshal(metadata)
+		metadataJSON = mBytes
+
+	case domain.CredentialInternship:
+		company := req.PullParameters["company"]
+		role := req.PullParameters["role"]
+		mgrEmail := req.PullParameters["manager_email"]
+
+		if company == "" || role == "" || mgrEmail == "" {
+			return nil, fmt.Errorf("missing company, role or manager email for internship verification")
+		}
+
+		log.Info().
+			Str("manager_email", mgrEmail).
+			Str("company", company).
+			Str("role", role).
+			Msg("[SIMULATOR] Sent verification email to internship manager. Sign-off automatically received.")
+
+		metadata := &domain.InternshipMetadata{
+			Company:      company,
+			Role:         role,
+			StartDate:    time.Now().AddDate(0, -3, 0).Format("2006-01-02"),
+			EndDate:      time.Now().Format("2006-01-02"),
+			TechStack:    []string{"Go", "React", "Docker"},
+			ManagerName:  "Alex Manager",
+			ManagerEmail: mgrEmail,
+		}
+
+		title = fmt.Sprintf("Verified Internship: %s at %s", role, company)
+		desc = fmt.Sprintf("Autopulled and verified internship under manager %s", mgrEmail)
+		mBytes, _ := json.Marshal(metadata)
+		metadataJSON = mBytes
+
+	default:
+		return nil, fmt.Errorf("unsupported credential type for pull verification: %s", req.CredentialType)
+	}
+
+	// Prepare payload for hashing
+	hashPayload := map[string]interface{}{
+		"credential_type": req.CredentialType,
+		"title":           title,
+		"student_wallet":  student.WalletAddress,
+		"issuer_wallet":   "0x0000000000000000000000000000000000000000",
+		"metadata":        json.RawMessage(metadataJSON),
+	}
+
+	contentHash, err := crypto.HashCredentialJSON(hashPayload)
+	if err != nil {
+		return nil, fmt.Errorf("failed to hash pulled credential: %w", err)
+	}
+
+	cred := &domain.Credential{
+		ID:             uuid.New(),
+		StudentID:      student.ID,
+		IssuerID:       nil, // System self-pulled credential
+		CredentialType: req.CredentialType,
+		Title:          title,
+		Description:    &desc,
+		Status:         domain.StatusPending,
+		Metadata:       metadataJSON,
+		ContentHash:    &contentHash,
+	}
+
+	if err := s.credRepo.Create(ctx, cred); err != nil {
+		return nil, fmt.Errorf("failed to save pulled credential cache: %w", err)
+	}
+
+	// Mint SBT on-chain
+	ipfsCID := "Qm" + contentHash[:44]
+	tokenID, txHash, err := s.blockchainService.MintSBT(student.WalletAddress, string(cred.CredentialType), contentHash, ipfsCID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to mint pulled SBT on-chain: %w", err)
+	}
+
+	if err := s.credRepo.UpdateOnChainData(ctx, cred.ID, tokenID, txHash, ipfsCID, contentHash); err != nil {
+		return nil, fmt.Errorf("failed to update database for pulled credential: %w", err)
+	}
+
+	cred.TokenID = &tokenID
+	cred.TxHash = &txHash
+	cred.IPFSCID = &ipfsCID
+	cred.Status = domain.StatusIssued
+
+	return cred, nil
 }

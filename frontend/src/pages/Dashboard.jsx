@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import GitHubWidget from '../components/GitHubWidget';
 import CredentialCard from '../components/CredentialCard';
 import CredentialModal from '../components/CredentialModal';
-import { Mail, GraduationCap, MapPin, ExternalLink, Calendar, Search, Award, RefreshCw } from 'lucide-react';
+import PullCredentialModal from '../components/PullCredentialModal';
+import { Mail, GraduationCap, MapPin, ExternalLink, Calendar, Search, Award, RefreshCw, Zap } from 'lucide-react';
 
 export default function Dashboard() {
   const { user, token, isOfflineMode, logout } = useAuth();
@@ -15,6 +16,7 @@ export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [selectedCred, setSelectedCred] = useState(null);
+  const [pullOpen, setPullOpen] = useState(false);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -236,14 +238,24 @@ export default function Dashboard() {
               <Award style={{ color: '#00f2fe' }} />
               <span>Verifiable Credentials (SBTs)</span>
             </h2>
-            <button 
-              onClick={fetchCredentials}
-              className="btn-secondary"
-              style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}
-            >
-              <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-              <span>Refresh</span>
-            </button>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button 
+                onClick={() => setPullOpen(true)}
+                className="btn-primary"
+                style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}
+              >
+                <Zap size={14} />
+                <span>Pull Credential</span>
+              </button>
+              <button 
+                onClick={fetchCredentials}
+                className="btn-secondary"
+                style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}
+              >
+                <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+                <span>Refresh</span>
+              </button>
+            </div>
           </div>
 
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
@@ -321,6 +333,14 @@ export default function Dashboard() {
           onClose={() => setSelectedCred(null)}
         />
       )}
+
+      {/* Pull Verification Modal */}
+      <PullCredentialModal 
+        isOpen={pullOpen}
+        onClose={() => setPullOpen(false)}
+        onRefresh={fetchCredentials}
+        token={token}
+      />
     </div>
   );
 }

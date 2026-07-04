@@ -36,6 +36,7 @@ func (h *CredentialHandler) RegisterRoutes(r chi.Router, authMw func(http.Handle
 
 		// Student routes
 		r.Get("/wallet/credentials", h.GetMyCredentials)
+		r.Post("/credentials/pull", h.PullCredential)
 
 		// Issuer-only routes
 		r.Group(func(r chi.Router) {
@@ -207,4 +208,27 @@ func (h *CredentialHandler) VerifyCredential(w http.ResponseWriter, r *http.Requ
 		"verified":   cred.Status == domain.StatusIssued,
 		"message":    "off-chain verification only — on-chain verification coming in Phase 3",
 	})
+}
+
+// PullCredential handles self-pull based credential issuance for students.
+func (h *CredentialHandler) PullCredential(w http.ResponseWriter, r *http.Request) {
+	studentID, err := getUserIDFromContext(r.Context())
+	if err != nil {
+		writeError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	var req domain.PullCredentialRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+
+	cred, err := h.svc.PullCredential(r.Context(), studentID, req)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	writeJSON(w, http.StatusCreated, cred)
 }
