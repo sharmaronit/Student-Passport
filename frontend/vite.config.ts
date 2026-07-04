@@ -11,7 +11,7 @@ export default defineConfig(({ command }) => ({
     tailwindcss(),
     tanstackStart(),
     viteReact(),
-    command === "build" ? nitro({ defaultPreset: "cloudflare-module" }) : null,
+    command === "build" ? nitro({ defaultPreset: "vercel" }) : null,
   ].filter(Boolean),
   resolve: {
     alias: {
