@@ -1,0 +1,77 @@
+version: "3.9"
+
+services:
+  # ============================================
+  # PostgreSQL Database
+  # ============================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: ssp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-skillpassport}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d skillpassport"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # Database Migrations
+  # ============================================
+  migrate:
+    image: migrate/migrate:v4.16.2
+    container_name: ssp-migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/migrations:/migrations
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-skillpassport}?sslmode=disable",
+      "up"
+    ]
+
+  # ============================================
+  # Go API Server
+  # ============================================
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ssp-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-skillpassport}?sslmode=disable
+      API_PORT: ${API_PORT:-8080}
+      API_ENV: ${API_ENV:-development}
+      JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-at-least-32-characters}
+      POLYGON_RPC_URL: ${POLYGON_RPC_URL:-https://rpc-amoy.polygon.technology/}
+      POLYGON_CHAIN_ID: ${POLYGON_CHAIN_ID:-80002}
+      BACKEND_WALLET_PRIVATE_KEY: ${BACKEND_WALLET_PRIVATE_KEY:-}
+      ISSUER_REGISTRY_ADDRESS: ${ISSUER_REGISTRY_ADDRESS:-}
+      SKILL_CREDENTIAL_ADDRESS: ${SKILL_CREDENTIAL_ADDRESS:-}
+      REVOCATION_REGISTRY_ADDRESS: ${REVOCATION_REGISTRY_ADDRESS:-}
+      PINATA_API_KEY: ${PINATA_API_KEY:-}
+      PINATA_SECRET_KEY: ${PINATA_SECRET_KEY:-}
+      PINATA_GATEWAY_URL: ${PINATA_GATEWAY_URL:-https://gateway.pinata.cloud/ipfs}
+    ports:
+      - "${API_PORT:-8080}:8080"
+    volumes:
+      - ./backend:/app
+
+volumes:
+  pgdata:
+    driver: local

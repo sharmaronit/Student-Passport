@@ -1,0 +1,41 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+tmp/
+
+# Go
+backend/vendor/
+backend/tmp/
+
+# Environment
+.env
+*.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+pgdata/
+
+# Node / Hardhat
+node_modules/
+contracts/node_modules/
+contracts/cache/
+contracts/artifacts/
+frontend/node_modules/
+frontend/dist/
+
+# Hardhat
+contracts/typechain-types/

@@ -1,0 +1,39 @@
+package handler
+
+import (
+	"encoding/json"
+	"net/http"
+)
+
+// APIResponse is the standard response envelope.
+type APIResponse struct {
+	Success bool        `json:"success"`
+	Data    interface{} `json:"data,omitempty"`
+	Error   string      `json:"error,omitempty"`
+}
+
+// writeJSON writes a JSON response with the given status code.
+func writeJSON(w http.ResponseWriter, status int, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+
+	resp := APIResponse{
+		Success: status >= 200 && status < 300,
+		Data:    data,
+	}
+
+	json.NewEncoder(w).Encode(resp)
+}
+
+// writeError writes a JSON error response.
+func writeError(w http.ResponseWriter, status int, message string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+
+	resp := APIResponse{
+		Success: false,
+		Error:   message,
+	}
+
+	json.NewEncoder(w).Encode(resp)
+}
