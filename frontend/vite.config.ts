@@ -1,3 +1,4 @@
+// Standard Vite Configuration for TanStack Start & Vercel Deployment
 import { defineConfig } from "vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
