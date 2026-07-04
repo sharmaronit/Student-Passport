@@ -73,6 +73,7 @@ A **Web3-powered digital wallet** that enables students to collect, store, and s
 - Connect MetaMask wallet and create profile
 - Register with email and link wallet later
 - View all credentials (SBTs) in dashboard
+- Request to pull verified credentials from GitHub, Credly/Coursera, Devfolio, or Internship manager attestation (Digilocker Mode)
 - Connect GitHub and see contribution stats (P1)
 - Generate shareable verification links (P1)
 - Auto-receive SBT on open-source PR merge (P2)
@@ -94,7 +95,7 @@ A **Web3-powered digital wallet** that enables students to collect, store, and s
 
 | Priority | Features |
 |----------|----------|
-| **P0** | Wallet auth (MetaMask + WalletConnect), hybrid email auth, CRUD profiles, credential issuance (IPFS → SBT → DB), on-chain verification |
+| **P0** | Wallet auth (MetaMask + WalletConnect), hybrid email auth, CRUD profiles, credential issuance (IPFS → SBT → DB), on-chain verification, Digilocker-style pull desk (GitHub, Credly, Hackathons) |
 | **P1** | GitHub API integration, contribution graph, share links, credential search/filter |
 | **P2** | GitHub webhook auto-mint, bulk issuance, public portfolio, analytics |
 

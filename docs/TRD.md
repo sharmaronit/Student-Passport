@@ -167,6 +167,23 @@
 - **Rate Limiting**: To be added in production
 - **CORS**: Configured for `localhost:3000` and `localhost:5173`
 
+### Pull Desk Endpoints (Digilocker Mode)
+| Endpoint | Method | Auth | Description |
+|----------|--------|------|-------------|
+| `/api/v1/credentials/pull` | `POST` | JWT | Pull achievements via third-party APIs (GitHub, Credly, Devfolio) and mint SBTs |
+
+**Request Payload:**
+```json
+{
+  "credential_type": "project",
+  "pull_parameters": {
+    "github_username": "sharmaronit",
+    "repository_owner": "facebook",
+    "repository_name": "react"
+  }
+}
+```
+
 ---
 
 ## 6. Security Requirements

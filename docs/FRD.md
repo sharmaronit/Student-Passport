@@ -154,6 +154,13 @@
 | **Features** | View counter, optional expiry date, can be deactivated |
 | **Public** | Anyone with the link can view — no wallet or auth needed |
 
+### FR-3.6: Digilocker Pull-Based Verification (Student Pull Desk)
+| Field | Detail |
+|-------|--------|
+| **Who** | Any authenticated student can pull achievements directly to their wallet |
+| **Integrations** | 1. **GitHub**: checks commit list for the student username in the specified repository.<br>2. **Credly/Coursera**: verifies certification IDs against platforms.<br>3. **Devfolio**: checks hackathon submissions.<br>4. **Internships**: triggers signature sign-off from manager email. |
+| **Output** | Verifies credentials, uploads metadata to IPFS, and mints an SBT on-chain |
+
 ---
 
 ## 4. GitHub Integration
